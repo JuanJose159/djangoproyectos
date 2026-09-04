@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de proyectos</title>
+    <!-- Carga segura de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            padding: 1.5rem;
+        }
+        main {
+            max-width: 56rem;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        ul { list-style: none; padding: 0; margin: 0; }
+        .header-flex { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 1.25rem; margin-bottom: 2rem; }
+        .proyecto-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background-color 0.15s ease;
+        }
+        .btn-crear { background-color: #0f172a; color: #ffffff; }
+        .btn-crear:hover { background-color: #1e293b; }
+        .btn-ver { background-color: #f1f5f9; color: #334155; }
+        .btn-ver:hover { background-color: #e2e8f0; }
+        .btn-eliminar { background-color: #fff1f2; color: #e11d48; }
+        .btn-eliminar:hover { background-color: #ffe4e6; }
+        .badge { background-color: #f1f5f9; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; }
+        svg { width: 16px; height: 16px; display: inline-block; vertical-align: middle; }
+    </style>
+</head>
+<body class="antialiased text-slate-700 p-4 md:p-6">
+
+    <main class="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm p-6 md:p-8 border border-slate-200">
+        
+        <!-- ENCABEZADO -->
+        <div class="header-flex flex flex-wrap items-center justify-between gap-4 mb-8 border-b border-slate-200 pb-5">
+            <div>
+                <h1 class="text-3xl font-semibold text-slate-800 flex items-center gap-2" style="font-size: 1.875rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                    <span class="bg-slate-800 text-white text-xs px-2 py-0.5 rounded-full" style="background: #1e293b; color: #fff; font-size: 0.75rem; padding: 2px 8px; border-radius: 99px;">📋</span>
+                    Proyectos
+                </h1>
+                <p class="text-sm text-slate-500 mt-1" style="font-size: 0.875rem; color: #64748b; margin-top: 4px;">Listado de proyectos activos</p>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="text-sm bg-slate-100 px-4 py-2 rounded-full text-slate-600 shadow-sm" style="background: #f1f5f9; padding: 6px 16px; border-radius: 99px; font-size: 0.875rem;">
+                    <span class="font-medium">{{ proyectos|length }}</span> 
+                    {% if proyectos|length == 1 %}proyecto{% else %}proyectos{% endif %}
+                </div>
+
+                <!-- BOTÓN AÑADIR PROYECTO -->
+                <a href="{% url 'nuevo_proyecto' %}" class="btn btn-crear">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                    Nuevo proyecto
+                </a>
+            </div>
+        </div>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        {% if proyectos %}
+            <ul class="space-y-4" role="list">
+                {% for proyecto in proyectos %}
+                <li class="proyecto-card bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                    <div style="flex: 1;">
+                        <h2 class="text-xl font-medium text-slate-800" style="font-size: 1.25rem; font-weight: 600; margin: 0; color: #1e293b;">{{ proyecto.nombre }}</h2>
+                        
+                        <p class="text-slate-600 text-sm mt-1" style="font-size: 0.875rem; color: #475569; margin: 6px 0;">
+                            {{ proyecto.descripcion|default:"Sin descripción" }}
+                        </p>
+                        
+                        <div class="mt-3 text-xs text-slate-500" style="margin-top: 10px;">
+                            <span class="badge inline-flex items-center gap-1 bg-slate-100 px-3 py-1 rounded-full">
+                                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                {{ proyecto.duracion|default:"—" }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- ACCIONES -->
+                    <div style="display: flex; gap: 8px;">
+                        <a href="{% url 'proyecto_detalle' proyecto.id %}" class="btn btn-ver">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                            Ver
+                        </a>
+                        <a href="{% url 'eliminar_proyecto' proyecto.id %}" class="btn btn-eliminar" 
+                        onclick="return confirm('Esta seguro de eliminar el proyecto?')">
+                            
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            Eliminar
+                        </a>
+                        
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <!-- ESTADO VACÍO -->
+            <div style="text-align: center; padding: 3rem; border: 1px dashed #cbd5e1; border-radius: 0.75rem;">
+                <span style="font-size: 1.5rem; background: #f1f5f9; padding: 0.75rem; border-radius: 9999px; display: inline-block; margin-bottom: 0.5rem;">📭</span>
+                <h3 style="font-size: 1.125rem; font-weight: 500; color: #475569;">No hay proyectos</h3>
+                <p style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 1rem;">Parece que todavía no has creado ningún proyecto.</p>
+                
+                <a href="{% url 'nuevo_royecto' %}" class="btn btn-crear">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                    Crear el primer proyecto
+                </a>
+            </div>
+        {% endif %}
+
+        <!-- PIE DE PÁGINA -->
+        <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; font-size: 0.75rem; color: #94a3b8;">
+            <span>{{ proyectos|length }} proyectos registrados</span>
+        </div>
+    </main>
+
+</body>
+</html>

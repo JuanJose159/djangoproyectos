@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1> Editar proyecto</h1>
+    <form  method="post">
+        {% csrf_token %}
+        <label for="nombre">Nombre del Proyecto</label>
+        <input type="text" name="nombre" id="nombre" value="{{ proyecto.nombre}}" required>
+        <br><br>
+        <label for="descripcion">Descripción</label>
+        <textarea name="descripcion" id="descripcion" rows="4" required>{{ proyecto.descripcion}}</textarea>
+        <br><br>
+        <label for="duracion ">Duración de dias</label>
+        <input type="number" name="duracion" id="duracion" value="{{ proyecto.duracion}}" required step="1" min="1">
+        <button type="submit">Guardar</button>
+    </form>
+    
+</body>
+</html>
