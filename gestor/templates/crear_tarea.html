@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear TAREA</title>
-</head>
-<body>
+{% extends 'layouts/base.html' %}
+{% block title %}Proyectos{% endblock %}
+{% block content %}
     <H1>Crear tarea a: {{ proyecto.nombre}}</H1>
     <form method="post">
         {% csrf_token %}
@@ -36,5 +31,4 @@
         <button type="submit"> Guardar</button>
     </form>
     
-</body>
-</html>
+{% endblock %}

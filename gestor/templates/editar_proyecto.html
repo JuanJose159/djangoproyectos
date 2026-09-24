@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+{% extends 'layouts/base.html' %}
+{% block title %}Proyectos{% endblock %}
+{% block content %}
     <h1> Editar proyecto</h1>
     <form  method="post">
         {% csrf_token %}
@@ -19,6 +14,4 @@
         <input type="number" name="duracion" id="duracion" value="{{ proyecto.duracion}}" required step="1" min="1">
         <button type="submit">Guardar</button>
     </form>
-    
-</body>
-</html>
+{% endblock %}    

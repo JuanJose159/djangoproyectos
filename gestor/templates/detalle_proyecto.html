@@ -1,38 +1,6 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalle del proyecto · Django</title>
-    <!-- Tailwind CSS v3 -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Mismos estilos base que en la lista -->
-    <style>
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #f8fafc;
-        }
-        .detalle-card {
-            transition: box-shadow 0.15s ease;
-        }
-        .enlace-accion {
-            transition: color 0.15s, background-color 0.15s;
-        }
-        .enlace-accion:hover {
-            background-color: #f1f5f9;
-        }
-        .badge {
-            background: #f1f5f9;
-        }
-        /* separador sutil */
-        .separador {
-            border-color: #e9edf2;
-        }
-    </style>
-</head>
-<body class="antialiased text-slate-700 p-4 md:p-6">
-
-    <main class="max-w-4xl mx-auto bg-white/70 backdrop-blur-sm rounded-2xl shadow-sm p-6 md:p-8 border border-slate-200/60">
+{% extends 'layouts/base.html' %}
+{% block title %}Proyectos{% endblock %}
+{% block content %}
         
         <!-- encabezado con navegación volver -->
         <div class="flex flex-wrap items-center justify-between gap-4 mb-6 border-b border-slate-200/80 pb-4">
@@ -82,9 +50,17 @@
             </div>
             <div>
                 {% for tarea in proyecto.tareas.all %}
+                <span>
                     <p>{{tarea.titulo}}</p>
+                </span>    
+                <span>         
                     <p>Prioridad {{tarea.get_prioridad_display}}</p>
-                    <p>Estado {{tarea.get_estado_display}}</p>
+                </span>
+                <form action="{% url 'avanzar_estado_tarea' tarea.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">{{ tarea.get_estado_display}}</button>
+                </form>
+            
                 {% endfor %}
             </div>
 
@@ -118,7 +94,4 @@
                 </span>
             </span>
         </div>
-    </main>
-
-</body>
-</html>
+{% endblock %}

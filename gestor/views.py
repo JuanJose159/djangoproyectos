@@ -1,7 +1,14 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Proyecto, Tarea
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
 
+@login_required
+def hello(request):
+    return render(request, 'home.html')
+
+@login_required
 def proyectos(request):
     proyectos = Proyecto.objects.all()
     return render(request, 'proyectos.html', {'proyectos': proyectos})
@@ -15,12 +22,14 @@ def nuevo_proyecto(request):
         nombre = request.POST.get('nombre')
         descripcion = request.POST.get('descripcion')
         duracion = request.POST.get('duracion')
+        imagen = request.FILES.get('imagen')
 
         if nombre and descripcion and duracion:
             proyecto = Proyecto(
                 nombre=nombre,
                 descripcion=descripcion,
                 duracion=duracion,
+                imagen=imagen
             )
             proyecto.save()
             return redirect('proyectos')  
@@ -70,3 +79,22 @@ def crear_tarea(request, proyecto_id):
             )
             return redirect ('proyecto_detalle' , id=proyecto_id)
     return render(request, 'crear_tarea.html' , {'proyecto': proyecto, 'prioridad_choices':Tarea.PRIORIDAD_CHOICES, 'estado_choices': Tarea.ESTADO_CHOICES})
+
+@require_POST
+def avanzar_estado_tarea(request, id):
+    tarea = Tarea.objects.get(id=id)
+
+    if tarea.estado == "PENDIENTE":
+        tarea.estado = "EN_PROGRESO"
+        tarea.save()
+    elif tarea.estado == "EN_PROGRESO":
+        tarea.estado = "COMPLETADA"
+        tarea.save()
+    return redirect('proyecto_detalle', proyecto_id=tarea.proyecto.id)
+
+@require_POST
+def completar_tarea(request, id):
+    tarea = Tarea.objects.get(id=id)
+    tarea.estado = "COMPLETADA"
+    tarea.save()
+    return redirect('proyecto_detalle', proyecto_id=tarea.proyecto.id)
